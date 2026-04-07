@@ -61,9 +61,9 @@
                             // 2. 강제 줄바꿈
                             targetFont.appendChild(document.createElement('br'));
                             
-                            // 3. 번역문 (스타일 및 괄호 처리)
+                            // 3. 번역문 (스타일 처리)
                             const transSpan = document.createElement('span');
-                            transSpan.textContent = `(${transText})`;
+                            transSpan.textContent = transText;
                             transSpan.style.color = '#787878'; 
                             transSpan.style.fontSize = '0.9em';
                             targetFont.appendChild(transSpan);
