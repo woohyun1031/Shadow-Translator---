@@ -1,6 +1,6 @@
 {
   "name": "shadow-translator",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "영어 원문을 그대로 유지한 채 바로 아래에 `(한글 번역문)`을 함께 띄워주는 가벼운 확장 프로그램입니다.",
   "main": "content.js",
   "scripts": {
