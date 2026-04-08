@@ -51,6 +51,40 @@
                 if (skipTags.has(child.tagName.toUpperCase())) {
                     continue;
                 }
+
+                // 스크린 리더용 숨김 텍스트 및 화면에 비표시되는 요소 무시 (GitHub 네비게이션바 등에서 보이지 않는 텍스트가 번역-추출되는 현상 방지)
+                let isHidden = false;
+                
+                if (child.hasAttribute && child.hasAttribute('aria-hidden') && child.getAttribute('aria-hidden') === 'true') {
+                    isHidden = true;
+                } else if (child.hasAttribute && child.hasAttribute('hidden')) {
+                    isHidden = true;
+                } else if (child.classList) {
+                    const hiddenClasses = ['sr-only', 'visually-hidden', 'screen-reader-text', 'hide', 'd-none', 'hidden', 'invisible', 'show-on-focus'];
+                    for (let cls of hiddenClasses) {
+                        if (child.classList.contains(cls)) {
+                            isHidden = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // 인라인 스타일로 직접 숨겨진 경우
+                if (!isHidden && child.style && (child.style.display === 'none' || child.style.visibility === 'hidden' || child.style.opacity === '0')) {
+                    isHidden = true;
+                }
+
+                // getComputedStyle로 실제 렌더링 여부 확인 (비용이 들 수 있으므로 마지막 방어선으로 사용)
+                if (!isHidden && window.getComputedStyle) {
+                    const style = window.getComputedStyle(child);
+                    if (style && (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0')) {
+                        isHidden = true;
+                    }
+                }
+
+                if (isHidden) {
+                    continue;
+                }
                 
                 // 크롬 번역 폰트를 만나면, 노드 교체 통신망에서 몰래 메모해둔 오리지널 텍스트를 꺼냄
                 if (child.tagName === 'FONT' && child.hasAttribute('data-echo-original')) {
