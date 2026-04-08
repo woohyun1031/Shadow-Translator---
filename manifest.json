@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Shadow Translator",
   "version": "1.0.0",
-  "description": "Appends original text alongside Google Translation.",
+  "description": "Retain original text alongside Google Translations for seamless reading and language learning.",
   "permissions": ["storage"],
   "action": {
     "default_title": "Shadow Translator",
