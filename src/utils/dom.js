@@ -1,7 +1,6 @@
 export const structuralTags = new Set([
     'P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 
     'LI', 'TD', 'TH', 'BLOCKQUOTE', 'DD', 'DT', 'FIGCAPTION',
-    'HEADER', 'FOOTER', 'MAIN', 'ASIDE', 'NAV', 'SECTION', 'ARTICLE', 'BODY',
     'SUMMARY', 'DETAILS', 'PRE', 'ADDRESS', 'CAPTION', 'FIGURE', 'DIALOG'
 ]);
 
@@ -18,7 +17,7 @@ export function getBlockContainer(node) {
         }
         current = current.parentNode;
     }
-    return node.ownerDocument ? node.ownerDocument.body : null;
+    return null;
 }
 
 export function isElementHidden(element) {
