@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSwitch.addEventListener('change', (e) => {
         const isEnabled = e.target.checked;
         chrome.storage.local.set({ isEnabled: isEnabled });
-        
+
         // Show hint message when toggled
         hintMessage.style.display = 'block';
         hintMessage.innerText = 'Please re-run Google Translate to apply changes.';

@@ -1,27 +1,30 @@
 {
-  "name": "shadow-translator",
-  "version": "1.0.0",
-  "description": "Preserve original text alongside Google Translations for seamless language learning and context retention.",
-  "main": "content.js",
-  "scripts": {
-    "build": "webpack",
-    "watch": "webpack --watch --mode development",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/woohyun1031/Shadow-Translator.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/woohyun1031/Shadow-Translator/issues"
-  },
-  "homepage": "https://github.com/woohyun1031/Shadow-Translator#readme",
-  "devDependencies": {
-    "copy-webpack-plugin": "^14.0.0",
-    "webpack": "^5.105.4",
-    "webpack-cli": "^7.0.2"
-  }
+    "name": "shadow-translator",
+    "version": "1.0.0",
+    "description": "Preserve original text alongside Google Translations for seamless language learning and context retention.",
+    "main": "content.js",
+    "scripts": {
+        "build": "webpack",
+        "watch": "webpack --watch --mode development",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "format": "prettier . --write",
+        "format:check": "prettier . --check"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/woohyun1031/Shadow-Translator.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/woohyun1031/Shadow-Translator/issues"
+    },
+    "homepage": "https://github.com/woohyun1031/Shadow-Translator#readme",
+    "devDependencies": {
+        "copy-webpack-plugin": "^14.0.0",
+        "prettier": "^3.8.2",
+        "webpack": "^5.105.4",
+        "webpack-cli": "^7.0.2"
+    }
 }

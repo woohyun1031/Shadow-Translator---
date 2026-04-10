@@ -1,6 +1,6 @@
 export function renderShadowText(block, text) {
     if (!text) return;
-    
+
     // 이미 내부에 원본 텍스트가 렌더링되어 있다면 중복 방지를 위해 스킵 (상위 컨테이너 중복 방지)
     if (block.querySelector('.echo-original-text')) {
         return;
@@ -26,5 +26,5 @@ export function renderShadowText(block, text) {
 }
 
 export function clearShadowTexts(container = document) {
-    container.querySelectorAll('.echo-original-text').forEach(el => el.remove());
+    container.querySelectorAll('.echo-original-text').forEach((el) => el.remove());
 }

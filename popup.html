@@ -1,155 +1,175 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>Shadow Translator</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            width: 260px;
-            margin: 0;
-            padding: 24px 20px;
-            background-color: #111216; /* Deep chic dark */
-            color: #e0e0e0;
-            box-sizing: border-box;
-        }
-        .header {
-            margin-bottom: 24px;
-            font-family: "Georgia", serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: #ffffff;
-            text-align: center;
-            letter-spacing: 0.8px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #1c1d22;
-            padding: 14px 18px;
-            border-radius: 10px;
-            border: 1px solid #2d2e35;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-        }
-        .toggle-label {
-            font-size: 14px;
-            color: #d1d1d1;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-        /* Switch UI */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-        .switch input { 
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #2a2b34;
-            transition: .3s;
-            border-radius: 24px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: #6a6d7a;
-            transition: .3s;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-        input:checked + .slider {
-            background-color: #e8eaed; /* Chic silver/white */
-            box-shadow: 0 0 10px rgba(232, 234, 237, 0.2);
-        }
-        input:checked + .slider:before {
-            transform: translateX(20px);
-            background-color: #111216; /* Dark knob */
-        }
-        .hint-message {
-            margin-top: 16px;
-            font-size: 12.5px;
-            color: #9ba0aa;
-            text-align: center;
-            display: none;
-            background-color: #17181c;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #282931;
-            line-height: 1.4;
-            letter-spacing: 0.2px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-        .helpful-links {
-            margin-top: 28px;
-            padding-top: 20px;
-            border-top: 1px solid #2d2e35;
-        }
-        .links-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 14px;
-        }
-        .link-item {
-            display: flex;
-            align-items: center;
-            color: #58a6ff;
-            text-decoration: underline;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        .link-item:hover {
-            color: #79b8ff;
-        }
-        .link-item svg {
-            margin-right: 8px;
-            color: #e0e0e0;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        Shadow Translator
-    </div>
-    <div class="toggle-container">
-        <span class="toggle-label">Enable Shadow</span>
-        <label class="switch">
-            <input type="checkbox" id="toggleSwitch">
-            <span class="slider"></span>
-        </label>
-    </div>
-    <div id="hintMessage" class="hint-message"></div>
+    <head>
+        <meta charset="utf-8" />
+        <title>Shadow Translator</title>
+        <style>
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+                    sans-serif;
+                width: 260px;
+                margin: 0;
+                padding: 24px 20px;
+                background-color: #111216; /* Deep chic dark */
+                color: #e0e0e0;
+                box-sizing: border-box;
+            }
+            .header {
+                margin-bottom: 24px;
+                font-family: 'Georgia', serif;
+                font-size: 22px;
+                font-weight: 700;
+                color: #ffffff;
+                text-align: center;
+                letter-spacing: 0.8px;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .toggle-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: #1c1d22;
+                padding: 14px 18px;
+                border-radius: 10px;
+                border: 1px solid #2d2e35;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+            }
+            .toggle-label {
+                font-size: 14px;
+                color: #d1d1d1;
+                font-weight: 500;
+                letter-spacing: 0.3px;
+            }
+            /* Switch UI */
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 44px;
+                height: 24px;
+            }
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #2a2b34;
+                transition: 0.3s;
+                border-radius: 24px;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+            }
+            .slider:before {
+                position: absolute;
+                content: '';
+                height: 18px;
+                width: 18px;
+                left: 3px;
+                bottom: 3px;
+                background-color: #6a6d7a;
+                transition: 0.3s;
+                border-radius: 50%;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            input:checked + .slider {
+                background-color: #e8eaed; /* Chic silver/white */
+                box-shadow: 0 0 10px rgba(232, 234, 237, 0.2);
+            }
+            input:checked + .slider:before {
+                transform: translateX(20px);
+                background-color: #111216; /* Dark knob */
+            }
+            .hint-message {
+                margin-top: 16px;
+                font-size: 12.5px;
+                color: #9ba0aa;
+                text-align: center;
+                display: none;
+                background-color: #17181c;
+                padding: 12px;
+                border-radius: 8px;
+                border: 1px solid #282931;
+                line-height: 1.4;
+                letter-spacing: 0.2px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            }
+            .helpful-links {
+                margin-top: 28px;
+                padding-top: 20px;
+                border-top: 1px solid #2d2e35;
+            }
+            .links-title {
+                font-size: 17px;
+                font-weight: 600;
+                color: #ffffff;
+                margin-bottom: 14px;
+            }
+            .link-item {
+                display: flex;
+                align-items: center;
+                color: #58a6ff;
+                text-decoration: underline;
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            .link-item:hover {
+                color: #79b8ff;
+            }
+            .link-item svg {
+                margin-right: 8px;
+                color: #e0e0e0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">Shadow Translator</div>
+        <div class="toggle-container">
+            <span class="toggle-label">Enable Shadow</span>
+            <label class="switch">
+                <input type="checkbox" id="toggleSwitch" />
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div id="hintMessage" class="hint-message"></div>
 
-    <div class="helpful-links">
-        <div class="links-title">Helpful links:</div>
-        <a href="https://github.com/woohyun1031/Shadow-Translator#troubleshooting" target="_blank" rel="noopener noreferrer" class="link-item">
-            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.46-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
-            Readme.md: Troubleshooting
-        </a>
-        <a href="https://github.com/woohyun1031/Shadow-Translator/issues" target="_blank" rel="noopener noreferrer" class="link-item" >​ 
-            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.46-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
-            GitHub issues
-        </a>
-    </div>
+        <div class="helpful-links">
+            <div class="links-title">Helpful links:</div>
+            <a
+                href="https://github.com/woohyun1031/Shadow-Translator#troubleshooting"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-item"
+            >
+                <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                    <path
+                        fill="currentColor"
+                        d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.46-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
+                    ></path>
+                </svg>
+                Readme.md: Troubleshooting
+            </a>
+            <a
+                href="https://github.com/woohyun1031/Shadow-Translator/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-item"
+                >​
+                <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                    <path
+                        fill="currentColor"
+                        d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.46-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
+                    ></path>
+                </svg>
+                GitHub issues
+            </a>
+        </div>
 
-    <script src="popup.js"></script>
-</body>
+        <script src="popup.js"></script>
+    </body>
 </html>

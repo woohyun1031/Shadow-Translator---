@@ -11,8 +11,16 @@ export function extractOriginalTextDeep(element) {
             if (child.classList && child.classList.contains('echo-original-text')) {
                 continue;
             }
-            
-            const skipTags = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE', 'IFRAME', 'SVG', 'OBJECT']);
+
+            const skipTags = new Set([
+                'SCRIPT',
+                'STYLE',
+                'NOSCRIPT',
+                'TEMPLATE',
+                'IFRAME',
+                'SVG',
+                'OBJECT',
+            ]);
             if (skipTags.has(child.tagName.toUpperCase())) {
                 continue;
             }
@@ -20,7 +28,7 @@ export function extractOriginalTextDeep(element) {
             if (isElementHidden(child)) {
                 continue;
             }
-            
+
             if (child.tagName === 'FONT' && child.hasAttribute('data-echo-original')) {
                 result += child.getAttribute('data-echo-original');
             } else {

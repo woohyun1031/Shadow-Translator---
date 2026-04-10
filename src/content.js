@@ -1,7 +1,7 @@
 import { startObserver, setEnabled } from './core/observer';
 
-(function() {
-    console.log("Shadow-Translator: Modular entry point initialized.");
+(function () {
+    console.log('Shadow-Translator: Modular entry point initialized.');
 
     const initObserver = () => {
         if (document.body) {
@@ -13,7 +13,7 @@ import { startObserver, setEnabled } from './core/observer';
 
     if (typeof chrome !== 'undefined' && chrome.storage) {
         chrome.storage.local.get(['isEnabled'], (result) => {
-            const isEnabledValue = result.isEnabled !== false; 
+            const isEnabledValue = result.isEnabled !== false;
             setEnabled(isEnabledValue);
             initObserver();
         });
