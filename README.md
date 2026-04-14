@@ -32,6 +32,7 @@
 2. 번역이 필요한 웹사이트(예: Amazon, Reddit, 해외 뉴스 등)에 접속합니다.
 3. 마우스 우클릭 후 `[한국어로 번역]`을 선택하거나 주소창의 번역 아이콘을 클릭합니다.
 4. 번역된 문장 바로 아래에 원문이 그림자처럼 나타납니다!
+5. https://www.youtube.com/watch?v=ta9WaXq1aoc&feature=youtu.be
 
 ---
 
