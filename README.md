@@ -68,6 +68,7 @@ A productivity toolkit that keeps Chrome's translation while appending the origi
 2. Visit a website you want to translate (e.g., Amazon, Reddit, global news).
 3. Right-click and select `[Translate to ...]` (your target language), or click the translate icon in the address bar.
 4. The original text will smoothly appear as a shadow right below the translated sentences!
+5. https://www.youtube.com/watch?v=ta9WaXq1aoc&feature=youtu.be
 
 ---
 
