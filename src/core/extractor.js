@@ -1,4 +1,4 @@
-import { isElementHidden } from '../utils/dom';
+import { isElementHidden, structuralTags } from '../utils/dom';
 
 export function extractOriginalTextDeep(element) {
     let result = '';
@@ -22,6 +22,10 @@ export function extractOriginalTextDeep(element) {
                 'OBJECT',
             ]);
             if (skipTags.has(child.tagName.toUpperCase())) {
+                continue;
+            }
+
+            if (structuralTags.has(child.tagName.toUpperCase())) {
                 continue;
             }
 

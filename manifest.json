@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Shadow Translator",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Preserve original text alongside Google Translations for seamless language learning and context retention.",
     "permissions": ["storage"],
     "action": {
@@ -18,8 +18,8 @@
         }
     ],
     "icons": {
-        "16": "assets/icon16.png",
-        "48": "assets/icon48.png",
-        "128": "assets/icon128.png"
+        "16": "assets/icon-16.png",
+        "48": "assets/icon-48.png",
+        "128": "assets/icon-128.png"
     }
 }

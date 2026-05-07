@@ -1,6 +1,6 @@
 {
     "name": "shadow-translator",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Preserve original text alongside Google Translations for seamless language learning and context retention.",
     "main": "content.js",
     "scripts": {
