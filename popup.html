@@ -3,339 +3,730 @@
     <head>
         <meta charset="utf-8" />
         <title>Shadow Translator</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-            rel="stylesheet"
-        />
         <style>
+            :root {
+                --pop-bg: #0e0f12;
+                --pop-bg-2: #14161b;
+                --pop-card: #15171c;
+                --pop-card-2: #1a1c22;
+                --pop-border: #25272e;
+                --pop-border-soft: #1e1f25;
+                --pop-text: #ececef;
+                --pop-text-dim: #9097a1;
+                --pop-text-muted: #5e646e;
+                --pop-accent: #ff6b35;
+                --pop-accent-soft: rgba(255, 107, 53, 0.14);
+                --pop-on: #e8eaed;
+            }
+
+            html,
             body {
+                margin: 0;
+                background: var(--pop-bg);
+                color: var(--pop-text);
                 font-family:
                     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
                     sans-serif;
-                width: 260px;
-                margin: 0;
-                padding: 24px 20px;
-                background-color: #111216; /* Deep chic dark */
-                color: #e0e0e0;
-                box-sizing: border-box;
+                -webkit-font-smoothing: antialiased;
             }
-            .brand {
+
+            body {
+                width: 260px;
+            }
+
+            .popup {
+                position: relative;
+                background: var(--pop-bg);
+                color: var(--pop-text);
+                overflow: hidden;
+                box-sizing: border-box;
+                /* drawer(~316px)가 슬라이드업해도 잘리지 않도록 고정 높이를 보장.
+                   닫혀 있을 때는 .pop-inner의 footer가 margin-top:auto로 바닥에 붙는다. */
+                min-height: 360px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .pop-inner {
+                padding: 16px 16px 14px;
+                position: relative;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Header */
+            .pop-header {
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                gap: 12px;
-                font-family: 'Inter', sans-serif;
-                font-size: 18px;
-                font-weight: 700;
+                gap: 10px;
+                margin-bottom: 14px;
+            }
+            .pop-logo {
+                width: 29px;
+                height: 29px;
+                flex-shrink: 0;
+                display: block;
+            }
+            .pop-title {
+                flex: 1;
+                min-width: 0;
+                line-height: 1.1;
+            }
+            .pop-title .name {
+                font-weight: 600;
+                font-size: 13.5px;
+                letter-spacing: -0.01em;
+                color: var(--pop-text);
+            }
+            .pop-title .sub {
+                font-size: 10.5px;
+                color: var(--pop-text-muted);
+                margin-top: 2px;
                 letter-spacing: 0.02em;
-                color: #ffffff;
-                margin-bottom: 24px;
             }
-            .brand .mark {
-                width: 22px;
-                height: 22px;
-                border-radius: 6px;
-                background: #1d1b16;
-                position: relative;
+            .pop-version {
+                font-size: 10px;
+                font-weight: 500;
+                color: var(--pop-text-muted);
+                padding: 3px 7px;
+                border-radius: 999px;
+                border: 1px solid var(--pop-border-soft);
+                letter-spacing: 0.03em;
             }
-            .brand .mark::after {
-                content: '';
-                position: absolute;
-                inset: 4px;
-                border-radius: 3px;
-                background: #ff6b35;
-            }
-            .toggle-container {
+
+            /* Enable toggle row */
+            .toggle-row {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                background: #1c1d22;
-                padding: 14px 18px;
+                padding: 12px 14px;
+                background: var(--pop-card);
+                border: 1px solid var(--pop-border-soft);
                 border-radius: 10px;
-                border: 1px solid #2d2e35;
-                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+                margin-bottom: 10px;
             }
-            .toggle-label {
-                font-size: 14px;
-                color: #d1d1d1;
+            .toggle-row .tr-text {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+            .toggle-row .tr-label {
+                font-size: 12.5px;
                 font-weight: 500;
-                letter-spacing: 0.3px;
+                color: var(--pop-text);
+                letter-spacing: 0.01em;
             }
-            /* Switch UI */
+            .toggle-row .tr-sub {
+                font-size: 10.5px;
+                color: var(--pop-text-muted);
+            }
+
+            /* Switch */
             .switch {
                 position: relative;
-                display: inline-block;
-                width: 44px;
-                height: 24px;
+                width: 36px;
+                height: 20px;
+                flex-shrink: 0;
             }
             .switch input {
                 opacity: 0;
                 width: 0;
                 height: 0;
-            }
-            .slider {
                 position: absolute;
+            }
+            .switch .track {
+                position: absolute;
+                inset: 0;
+                background: var(--pop-card-2);
+                border: 1px solid var(--pop-border);
+                border-radius: 999px;
+                transition:
+                    background 0.2s,
+                    border-color 0.2s;
                 cursor: pointer;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: #2a2b34;
-                transition: 0.3s;
-                border-radius: 24px;
-                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
             }
-            .slider:before {
+            .switch .knob {
                 position: absolute;
-                content: '';
-                height: 18px;
-                width: 18px;
-                left: 3px;
-                bottom: 3px;
-                background-color: #6a6d7a;
-                transition: 0.3s;
+                width: 14px;
+                height: 14px;
+                background: var(--pop-text-muted);
                 border-radius: 50%;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+                top: 50%;
+                left: 3px;
+                transform: translateY(-50%);
+                transition:
+                    left 0.18s ease,
+                    background 0.18s;
+                pointer-events: none;
             }
-            input:checked + .slider {
-                background-color: #e8eaed; /* Chic silver/white */
-                box-shadow: 0 0 10px rgba(232, 234, 237, 0.2);
+            .switch input:checked + .track {
+                background: var(--pop-on);
+                border-color: var(--pop-on);
             }
-            input:checked + .slider:before {
-                transform: translateX(20px);
-                background-color: #111216; /* Dark knob */
+            .switch input:checked + .track + .knob {
+                left: 19px;
+                background: var(--pop-bg);
             }
-            .hint-message {
-                margin-top: 16px;
-                font-size: 12.5px;
-                color: #9ba0aa;
-                text-align: center;
-                display: none;
-                background-color: #17181c;
-                padding: 12px;
-                border-radius: 8px;
-                border: 1px solid #282931;
-                line-height: 1.4;
-                letter-spacing: 0.2px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            }
-            .helpful-links {
-                margin-top: 28px;
-                padding-top: 20px;
-                border-top: 1px solid #2d2e35;
-            }
-            .links-title {
-                font-size: 17px;
-                font-weight: 600;
-                color: #ffffff;
-                margin-bottom: 14px;
-            }
-            .link-item {
-                display: flex;
-                align-items: center;
-                color: #58a6ff;
-                text-decoration: underline;
-                font-size: 14px;
-                margin-bottom: 10px;
-            }
-            .link-item:hover {
-                color: #79b8ff;
-            }
-            .link-item svg {
-                margin-right: 8px;
-                color: #e0e0e0;
-            }
-            .settings-button {
+
+            /* Settings trigger */
+            .settings-trigger {
                 width: 100%;
-                margin-top: 20px;
-                padding: 12px 14px;
-                background: #1c1d22;
-                color: #e0e0e0;
-                font-size: 13.5px;
-                font-weight: 500;
-                font-family: inherit;
-                border: 1px solid #2d2e35;
-                border-radius: 10px;
-                cursor: pointer;
-                transition: background 0.2s;
-            }
-            .settings-button:hover {
-                background: #24252b;
-            }
-            .settings-view {
-                flex-direction: column;
-                gap: 14px;
-            }
-            .form-row {
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-            }
-            .form-row .row-head {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                padding: 11px 14px;
+                background: transparent;
+                border: 1px solid var(--pop-border-soft);
+                border-radius: 10px;
+                color: var(--pop-text-dim);
+                font-family: inherit;
                 font-size: 12.5px;
-                color: #d1d1d1;
                 font-weight: 500;
-                letter-spacing: 0.2px;
+                letter-spacing: 0.01em;
+                cursor: pointer;
+                transition:
+                    background 0.15s,
+                    color 0.15s,
+                    border-color 0.15s;
+                margin-bottom: 12px;
             }
-            .form-row .row-head output {
+            .settings-trigger:hover {
+                background: var(--pop-card);
+                color: var(--pop-text);
+                border-color: var(--pop-border);
+            }
+            .settings-trigger .st-left {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+            }
+            .settings-trigger .st-chev {
+                color: var(--pop-text-muted);
+            }
+
+            /* Hint message (Enable 변경 후 안내) */
+            .hint-message {
+                margin-bottom: 12px;
+                font-size: 11.5px;
+                color: var(--pop-text-dim);
+                background-color: var(--pop-card);
+                padding: 10px 12px;
+                border-radius: 8px;
+                border: 1px solid var(--pop-border-soft);
+                line-height: 1.4;
+                letter-spacing: 0.2px;
+                display: none;
+            }
+
+            /* Footer */
+            .footer {
+                border-top: 1px solid var(--pop-border-soft);
+                padding-top: 11px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                /* 기본 높이가 drawer에 맞춰 고정돼 있어 빈 공간이 위로 모이도록 한다 */
+                margin-top: auto;
+            }
+            .footer .links {
+                display: flex;
+                gap: 12px;
+            }
+            .footer .links a {
+                color: var(--pop-text-dim);
+                text-decoration: none;
+                font-size: 11px;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                transition: color 0.15s;
+            }
+            .footer .links a:hover {
+                color: var(--pop-text);
+            }
+            .footer .links svg {
+                width: 12px;
+                height: 12px;
+                opacity: 0.8;
+            }
+            .footer .privacy {
+                font-size: 9.5px;
+                color: var(--pop-text-muted);
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .footer .privacy::before {
+                content: '';
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--pop-text-muted);
+                opacity: 0.6;
+            }
+
+            /* Drawer */
+            .drawer-scrim {
+                position: absolute;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.22s;
+                z-index: 5;
+            }
+            .drawer-scrim.open {
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .drawer {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: var(--pop-bg-2);
+                border-top: 1px solid var(--pop-border);
+                border-radius: 16px 16px 0 0;
+                transform: translateY(100%);
+                transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.25, 1);
+                z-index: 10;
+                padding: 8px 16px 14px;
+                box-sizing: border-box;
+                box-shadow:
+                    0 -10px 24px -6px rgba(0, 0, 0, 0.45),
+                    0 -1px 0 rgba(255, 255, 255, 0.03) inset;
+            }
+            .drawer.open {
+                transform: translateY(0);
+            }
+            .drawer .handle {
+                width: 32px;
+                height: 3px;
+                background: var(--pop-border);
+                border-radius: 999px;
+                margin: 4px auto 10px;
+            }
+            .drawer .d-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 12px;
+            }
+            .drawer .d-title {
                 font-size: 12px;
-                color: #9ba0aa;
+                font-weight: 600;
+                color: var(--pop-text);
+                letter-spacing: 0.01em;
+            }
+            .drawer .d-close {
+                background: transparent;
+                border: none;
+                color: var(--pop-text-muted);
+                cursor: pointer;
+                font-size: 11px;
+                font-family: inherit;
+                padding: 4px 6px;
+                margin: -4px -6px;
+                border-radius: 6px;
+            }
+            .drawer .d-close:hover {
+                color: var(--pop-text);
+            }
+
+            .field {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                margin-bottom: 12px;
+            }
+            .field .f-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .field .f-label {
+                font-size: 11px;
+                color: var(--pop-text-dim);
+                font-weight: 500;
+                letter-spacing: 0.02em;
+            }
+            .field .f-out {
+                font-size: 10.5px;
+                color: var(--pop-text-muted);
                 font-variant-numeric: tabular-nums;
             }
-            .form-row input[type='range'] {
-                width: 100%;
-                accent-color: #ff6b35;
-            }
-            .form-row input[type='text'].coloris {
-                width: 100%;
-                padding: 8px 10px;
-                background: #1c1d22;
-                color: #e0e0e0;
-                border: 1px solid #2d2e35;
-                border-radius: 8px;
-                font-family: inherit;
-                font-size: 13px;
-                box-sizing: border-box;
-            }
-            .action-row {
+
+            /* Swatches */
+            .swatches {
                 display: flex;
-                gap: 8px;
-                margin-top: 8px;
-                padding-top: 16px;
-                border-top: 1px solid #2d2e35;
+                gap: 6px;
+                align-items: center;
             }
-            .action-row button {
+            .swatch {
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                cursor: pointer;
+                border: 1px solid var(--pop-border-soft);
+                position: relative;
+                transition: transform 0.15s;
+                padding: 0;
+                background-clip: padding-box;
+            }
+            .swatch:hover {
+                transform: scale(1.08);
+            }
+            .swatch.active::after {
+                content: '';
+                position: absolute;
+                inset: -3px;
+                border: 1px solid var(--pop-text);
+                border-radius: 50%;
+            }
+            .swatch.custom {
+                background: conic-gradient(
+                    from 0deg,
+                    #ff5b5b,
+                    #ffd14f,
+                    #6fd97a,
+                    #5ab9ff,
+                    #b974ff,
+                    #ff5b5b
+                );
+                display: grid;
+                place-items: center;
+                overflow: hidden;
+            }
+            .swatch.custom input {
+                opacity: 0;
+                position: absolute;
+                inset: 0;
+                cursor: pointer;
+                border: 0;
+                padding: 0;
+            }
+            .swatch.custom .pencil {
+                color: #fff;
+                font-size: 10px;
+                line-height: 1;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+                pointer-events: none;
+            }
+
+            /* Range */
+            .range {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 100%;
+                height: 16px;
+                background: transparent;
+                cursor: pointer;
+                padding: 0;
+                accent-color: var(--pop-accent);
+            }
+            .range::-webkit-slider-runnable-track {
+                height: 3px;
+                background: var(--pop-border);
+                border-radius: 999px;
+            }
+            .range::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: var(--pop-text);
+                margin-top: -5.5px;
+                border: 2px solid var(--pop-bg);
+                box-shadow: 0 0 0 1px var(--pop-border);
+                cursor: pointer;
+            }
+            .range::-moz-range-track {
+                height: 3px;
+                background: var(--pop-border);
+                border-radius: 999px;
+            }
+            .range::-moz-range-thumb {
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: var(--pop-text);
+                border: 2px solid var(--pop-bg);
+                box-shadow: 0 0 0 1px var(--pop-border);
+            }
+
+            /* Action row */
+            .actions {
+                display: flex;
+                gap: 6px;
+                margin-top: 14px;
+                padding-top: 12px;
+                border-top: 1px solid var(--pop-border-soft);
+            }
+            .actions button {
                 flex: 1;
-                padding: 10px 0;
-                font-size: 13px;
+                padding: 8px 0;
+                font-size: 11.5px;
                 font-weight: 500;
                 font-family: inherit;
                 border-radius: 8px;
                 cursor: pointer;
                 transition:
                     background 0.15s,
-                    color 0.15s;
+                    color 0.15s,
+                    border-color 0.15s,
+                    opacity 0.15s;
+                letter-spacing: 0.01em;
             }
-            .action-row .btn-reset {
+            .btn-reset {
                 background: transparent;
-                color: #9ba0aa;
-                border: 1px solid #2d2e35;
+                color: var(--pop-text-muted);
+                border: 1px solid transparent;
+                flex: 0.6;
             }
-            .action-row .btn-reset:hover {
-                color: #e0e0e0;
+            .btn-reset:hover {
+                color: var(--pop-text-dim);
             }
-            .action-row .btn-cancel {
-                background: #1c1d22;
-                color: #d1d1d1;
-                border: 1px solid #2d2e35;
+            .btn-cancel {
+                background: transparent;
+                color: var(--pop-text-dim);
+                border: 1px solid var(--pop-border);
             }
-            .action-row .btn-cancel:hover {
-                background: #24252b;
+            .btn-cancel:hover {
+                background: var(--pop-card);
+                color: var(--pop-text);
             }
-            .action-row .btn-save {
-                background: #ff6b35;
-                color: #111216;
-                border: 1px solid #ff6b35;
+            .btn-save {
+                background: var(--pop-text);
+                color: var(--pop-bg);
+                border: 1px solid var(--pop-text);
             }
-            .action-row .btn-save:hover {
-                background: #ff7d4d;
+            .btn-save:hover {
+                opacity: 0.92;
             }
         </style>
     </head>
     <body>
-        <div class="brand" aria-label="Shadow Translator">
-            <span class="mark" aria-hidden="true"></span>
-            <span>Shadow Translator</span>
-        </div>
+        <div class="popup" id="popup" data-popup-enabled="true">
+            <div class="pop-inner">
+                <!-- Header -->
+                <div class="pop-header">
+                    <img src="assets/logo.svg" alt="" class="pop-logo" aria-hidden="true" />
+                    <div class="pop-title">
+                        <div class="name">Shadow Translator</div>
+                        <div class="sub">Original under translation</div>
+                    </div>
+                    <div class="pop-version">v1.1.0</div>
+                </div>
 
-        <div id="mainView">
-            <div class="toggle-container">
-                <span class="toggle-label">Enable Shadow</span>
-                <label class="switch">
-                    <input type="checkbox" id="toggleSwitch" />
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div id="hintMessage" class="hint-message"></div>
+                <!-- Enable toggle -->
+                <div class="toggle-row">
+                    <div class="tr-text">
+                        <div class="tr-label">Enable Shadow</div>
+                        <div class="tr-sub" id="enableSub">Active on this page</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="toggleSwitch" />
+                        <span class="track"></span>
+                        <span class="knob"></span>
+                    </label>
+                </div>
 
-            <div class="helpful-links">
-                <div class="links-title">Helpful links:</div>
-                <a
-                    href="https://github.com/woohyun1031/Shadow-Translator#troubleshooting"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="link-item"
-                >
-                    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-                        <path
-                            fill="currentColor"
-                            d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.46-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
-                        ></path>
+                <div id="hintMessage" class="hint-message"></div>
+
+                <!-- Open settings drawer -->
+                <button class="settings-trigger" id="openSettings" type="button">
+                    <span class="st-left">
+                        <svg
+                            width="13"
+                            height="13"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                            />
+                        </svg>
+                        Shadow style
+                    </span>
+                    <svg
+                        class="st-chev"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M9 18l6-6-6-6" />
                     </svg>
-                    Readme.md: Troubleshooting
-                </a>
-                <a
-                    href="https://github.com/woohyun1031/Shadow-Translator/issues"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="link-item"
-                >
-                    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-                        <path
-                            fill="currentColor"
-                            d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.46-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
-                        ></path>
-                    </svg>
-                    GitHub issues
-                </a>
-            </div>
+                </button>
 
-            <button id="openSettings" class="settings-button" type="button">
-                shadow style 변경
-            </button>
-        </div>
-
-        <div id="settingsView" class="settings-view" style="display: none">
-            <div class="form-row">
-                <div class="row-head">
-                    <label for="cs-color">색상</label>
+                <!-- Footer -->
+                <div class="footer">
+                    <div class="links">
+                        <a
+                            href="https://github.com/woohyun1031/Shadow-Translator#troubleshooting"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            id="lnkHelp"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4" />
+                                <circle cx="12" cy="17" r="0.5" fill="currentColor" />
+                            </svg>
+                            Help
+                        </a>
+                        <a
+                            href="https://github.com/woohyun1031/Shadow-Translator/issues"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            id="lnkIssue"
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                            >
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M12 8v4" />
+                                <circle cx="12" cy="16" r="0.5" fill="currentColor" />
+                            </svg>
+                            Issue
+                        </a>
+                    </div>
+                    <!-- <span class="privacy">Local only</span> -->
                 </div>
-                <input type="text" id="cs-color" class="coloris" value="#787878" />
             </div>
 
-            <div class="form-row">
-                <div class="row-head">
-                    <label for="cs-fontSize">글자 크기</label>
-                    <output for="cs-fontSize" id="cs-fontSize-out">0.90em</output>
+            <!-- Drawer -->
+            <div class="drawer-scrim" id="scrim"></div>
+            <div class="drawer" id="drawer" role="dialog" aria-label="Shadow style settings">
+                <div class="handle"></div>
+                <div class="d-header">
+                    <div class="d-title">Shadow style</div>
+                    <button class="d-close" id="closeDrawer" type="button">Close</button>
                 </div>
-                <input type="range" id="cs-fontSize" min="0.5" max="1.6" step="0.05" value="0.9" />
-            </div>
 
-            <div class="form-row">
-                <div class="row-head">
-                    <label for="cs-lineHeight">줄 간격</label>
-                    <output for="cs-lineHeight" id="cs-lineHeight-out">1.4</output>
+                <!-- Color -->
+                <div class="field">
+                    <div class="f-head">
+                        <span class="f-label">Color</span>
+                        <span class="f-out" id="colorOut">#787878</span>
+                    </div>
+                    <div class="swatches" id="swatches">
+                        <button
+                            type="button"
+                            class="swatch"
+                            data-color="#787878"
+                            style="background: #787878"
+                        ></button>
+                        <button
+                            type="button"
+                            class="swatch"
+                            data-color="#9aa0a8"
+                            style="background: #9aa0a8"
+                        ></button>
+                        <button
+                            type="button"
+                            class="swatch"
+                            data-color="#5e646e"
+                            style="background: #5e646e"
+                        ></button>
+                        <button
+                            type="button"
+                            class="swatch"
+                            data-color="#3a3d44"
+                            style="background: #3a3d44"
+                        ></button>
+                        <button
+                            type="button"
+                            class="swatch"
+                            data-color="#ff6b35"
+                            style="background: #ff6b35"
+                        ></button>
+                        <button
+                            type="button"
+                            class="swatch"
+                            data-color="#6f9bd1"
+                            style="background: #6f9bd1"
+                        ></button>
+                        <label class="swatch custom" title="Pick color">
+                            <span class="pencil">✎</span>
+                            <input type="color" id="customColor" value="#787878" />
+                        </label>
+                    </div>
                 </div>
-                <input type="range" id="cs-lineHeight" min="1.0" max="2.0" step="0.1" value="1.4" />
-            </div>
 
-            <div class="form-row">
-                <div class="row-head">
-                    <label for="cs-opacity">투명도</label>
-                    <output for="cs-opacity" id="cs-opacity-out">0.80</output>
+                <!-- Font size -->
+                <div class="field">
+                    <div class="f-head">
+                        <span class="f-label">Font size</span>
+                        <span class="f-out" id="sizeOut">0.90em</span>
+                    </div>
+                    <input
+                        class="range"
+                        type="range"
+                        id="sizeRange"
+                        min="0.5"
+                        max="1.6"
+                        step="0.05"
+                        value="0.9"
+                    />
                 </div>
-                <input type="range" id="cs-opacity" min="0.2" max="1.0" step="0.05" value="0.8" />
-            </div>
 
-            <div class="action-row">
-                <button type="button" id="resetBtn" class="btn-reset">초기화</button>
-                <button type="button" id="cancelBtn" class="btn-cancel">취소</button>
-                <button type="button" id="saveBtn" class="btn-save">저장</button>
+                <!-- Line height -->
+                <div class="field">
+                    <div class="f-head">
+                        <span class="f-label">Line height</span>
+                        <span class="f-out" id="lineOut">1.4</span>
+                    </div>
+                    <input
+                        class="range"
+                        type="range"
+                        id="lineRange"
+                        min="1.0"
+                        max="2.0"
+                        step="0.1"
+                        value="1.4"
+                    />
+                </div>
+
+                <!-- Opacity -->
+                <div class="field">
+                    <div class="f-head">
+                        <span class="f-label">Opacity</span>
+                        <span class="f-out" id="opOut">0.80</span>
+                    </div>
+                    <input
+                        class="range"
+                        type="range"
+                        id="opRange"
+                        min="0.2"
+                        max="1.0"
+                        step="0.05"
+                        value="0.8"
+                    />
+                </div>
+
+                <div class="actions">
+                    <button type="button" class="btn-reset" id="btnReset">Reset</button>
+                    <button type="button" class="btn-cancel" id="btnCancel">Cancel</button>
+                    <button type="button" class="btn-save" id="btnSave">Save</button>
+                </div>
             </div>
         </div>
 

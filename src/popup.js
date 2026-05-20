@@ -1,5 +1,3 @@
-import Coloris from '@melloware/coloris';
-import '@melloware/coloris/dist/coloris.css';
 import { DEFAULT_SHADOW_STYLE, SHADOW_STYLE_RANGES } from './core/defaults';
 
 const FORMATTERS = {
@@ -27,156 +25,156 @@ function sanitizeStyle(style) {
 }
 
 function init() {
+    const popup = document.getElementById('popup');
     const toggleSwitch = document.getElementById('toggleSwitch');
+    const enableSub = document.getElementById('enableSub');
     const hintMessage = document.getElementById('hintMessage');
-    const mainView = document.getElementById('mainView');
-    const settingsView = document.getElementById('settingsView');
-    const openSettingsBtn = document.getElementById('openSettings');
-    const resetBtn = document.getElementById('resetBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const saveBtn = document.getElementById('saveBtn');
 
-    const colorInput = document.getElementById('cs-color');
-    const rangeInputs = {
-        fontSize: document.getElementById('cs-fontSize'),
-        lineHeight: document.getElementById('cs-lineHeight'),
-        opacity: document.getElementById('cs-opacity'),
+    const openSettingsBtn = document.getElementById('openSettings');
+    const drawer = document.getElementById('drawer');
+    const scrim = document.getElementById('scrim');
+    const closeDrawerBtn = document.getElementById('closeDrawer');
+
+    const swatchesEl = document.getElementById('swatches');
+    const customColorInput = document.getElementById('customColor');
+    const colorOut = document.getElementById('colorOut');
+
+    const ranges = {
+        fontSize: document.getElementById('sizeRange'),
+        lineHeight: document.getElementById('lineRange'),
+        opacity: document.getElementById('opRange'),
     };
-    const rangeOutputs = {
-        fontSize: document.getElementById('cs-fontSize-out'),
-        lineHeight: document.getElementById('cs-lineHeight-out'),
-        opacity: document.getElementById('cs-opacity-out'),
+    const outs = {
+        fontSize: document.getElementById('sizeOut'),
+        lineHeight: document.getElementById('lineOut'),
+        opacity: document.getElementById('opOut'),
     };
+
+    const resetBtn = document.getElementById('btnReset');
+    const cancelBtn = document.getElementById('btnCancel');
+    const saveBtn = document.getElementById('btnSave');
 
     if (
-        !mainView ||
-        !settingsView ||
+        !popup ||
+        !toggleSwitch ||
         !openSettingsBtn ||
-        !colorInput ||
-        !rangeInputs.fontSize ||
-        !rangeInputs.lineHeight ||
-        !rangeInputs.opacity
+        !drawer ||
+        !swatchesEl ||
+        !ranges.fontSize ||
+        !ranges.lineHeight ||
+        !ranges.opacity
     ) {
         console.error('[Shadow Translator] popup elements missing — check popup.html ids');
         return;
     }
 
-    function setMainVisible() {
-        mainView.style.display = '';
-        settingsView.style.display = 'none';
-    }
-
-    function setSettingsVisible() {
-        mainView.style.display = 'none';
-        settingsView.style.display = 'flex';
-    }
-
-    // Initial state: settings view hidden, main view visible.
-    setMainVisible();
-
+    let state = { ...DEFAULT_SHADOW_STYLE };
     let originalStyle = null;
-    let isPopulating = false;
 
-    try {
-        Coloris.init();
-        Coloris({
-            el: '#cs-color',
-            themeMode: 'dark',
-            alpha: false,
-            format: 'hex',
+    function applyToForm() {
+        const hex = (state.color || '').toString();
+        colorOut.textContent = hex.toUpperCase();
+        customColorInput.value = hex;
+
+        swatchesEl.querySelectorAll('.swatch[data-color]').forEach((el) => {
+            el.classList.toggle('active', el.dataset.color.toLowerCase() === hex.toLowerCase());
         });
-    } catch (err) {
-        console.error('[Shadow Translator] Coloris init failed:', err);
+
+        for (const key of Object.keys(ranges)) {
+            ranges[key].value = state[key];
+            outs[key].textContent = FORMATTERS[key](state[key]);
+        }
+    }
+
+    function writeStyle() {
+        chrome.storage.local.set({ shadowStyle: sanitizeStyle(state) });
     }
 
     // --- Enable toggle ---
-    chrome.storage.local.get(['isEnabled'], (result) => {
+    function setEnabledUI(enabled) {
+        popup.dataset.popupEnabled = enabled ? 'true' : 'false';
+        enableSub.textContent = enabled ? 'Active on this page' : 'Paused — toggle to resume';
+    }
+
+    chrome.storage.local.get(['isEnabled', 'shadowStyle'], (result) => {
         if (chrome.runtime.lastError) {
-            console.error(
-                '[Shadow Translator] storage.get isEnabled error:',
-                chrome.runtime.lastError
-            );
+            console.error('[Shadow Translator] storage.get error:', chrome.runtime.lastError);
             return;
         }
-        toggleSwitch.checked = result.isEnabled !== false;
+        const enabled = result.isEnabled !== false;
+        toggleSwitch.checked = enabled;
+        setEnabledUI(enabled);
+        state = mergeStyle(result && result.shadowStyle);
+        applyToForm();
     });
 
     toggleSwitch.addEventListener('change', (e) => {
-        chrome.storage.local.set({ isEnabled: e.target.checked });
+        const on = e.target.checked;
+        chrome.storage.local.set({ isEnabled: on });
+        setEnabledUI(on);
         hintMessage.style.display = 'block';
         hintMessage.innerText = 'Please re-run Google Translate to apply changes.';
     });
 
-    function populateForm(style) {
-        isPopulating = true;
-        colorInput.value = style.color;
-        for (const key of Object.keys(rangeInputs)) {
-            rangeInputs[key].value = style[key];
-            rangeOutputs[key].textContent = FORMATTERS[key](style[key]);
-        }
-        // Coloris의 wrapper 색상 미리보기를 동기화하려면 input 이벤트 디스패치가 필요.
-        colorInput.dispatchEvent(new Event('input', { bubbles: true }));
-        isPopulating = false;
+    // --- Drawer ---
+    function openDrawer() {
+        originalStyle = { ...state };
+        drawer.classList.add('open');
+        scrim.classList.add('open');
     }
 
-    function readForm() {
-        return sanitizeStyle({
-            color: colorInput.value || DEFAULT_SHADOW_STYLE.color,
-            fontSize: parseFloat(rangeInputs.fontSize.value),
-            lineHeight: parseFloat(rangeInputs.lineHeight.value),
-            opacity: parseFloat(rangeInputs.opacity.value),
-        });
+    function closeDrawerKeep() {
+        drawer.classList.remove('open');
+        scrim.classList.remove('open');
+        originalStyle = null;
     }
 
-    function writeStyle(style) {
-        chrome.storage.local.set({ shadowStyle: style });
-    }
-
-    colorInput.addEventListener('input', () => {
-        if (isPopulating) return;
-        writeStyle(readForm());
-    });
-
-    for (const key of Object.keys(rangeInputs)) {
-        rangeInputs[key].addEventListener('input', (e) => {
-            rangeOutputs[key].textContent = FORMATTERS[key](e.target.value);
-            if (isPopulating) return;
-            writeStyle(readForm());
-        });
-    }
-
-    openSettingsBtn.addEventListener('click', () => {
-        chrome.storage.local.get(['shadowStyle'], (result) => {
-            if (chrome.runtime.lastError) {
-                console.error(
-                    '[Shadow Translator] storage.get shadowStyle error:',
-                    chrome.runtime.lastError
-                );
-            }
-            const merged = mergeStyle(result && result.shadowStyle);
-            originalStyle = { ...merged };
-            populateForm(merged);
-            setSettingsVisible();
-        });
-    });
-
-    cancelBtn.addEventListener('click', () => {
+    function closeDrawerRevert() {
         if (originalStyle) {
-            writeStyle(originalStyle);
+            state = { ...originalStyle };
+            writeStyle();
+            applyToForm();
         }
+        drawer.classList.remove('open');
+        scrim.classList.remove('open');
         originalStyle = null;
-        setMainVisible();
+    }
+
+    openSettingsBtn.addEventListener('click', openDrawer);
+    closeDrawerBtn.addEventListener('click', closeDrawerRevert);
+    cancelBtn.addEventListener('click', closeDrawerRevert);
+    scrim.addEventListener('click', closeDrawerRevert);
+    saveBtn.addEventListener('click', closeDrawerKeep);
+
+    // --- Swatches ---
+    swatchesEl.querySelectorAll('.swatch[data-color]').forEach((el) => {
+        el.addEventListener('click', () => {
+            state = { ...state, color: el.dataset.color };
+            applyToForm();
+            writeStyle();
+        });
+    });
+    customColorInput.addEventListener('input', (e) => {
+        state = { ...state, color: e.target.value };
+        applyToForm();
+        writeStyle();
     });
 
-    saveBtn.addEventListener('click', () => {
-        originalStyle = null;
-        setMainVisible();
-    });
+    // --- Ranges ---
+    for (const key of Object.keys(ranges)) {
+        ranges[key].addEventListener('input', (e) => {
+            const v = parseFloat(e.target.value);
+            state = { ...state, [key]: v };
+            outs[key].textContent = FORMATTERS[key](v);
+            writeStyle();
+        });
+    }
 
+    // --- Reset ---
     resetBtn.addEventListener('click', () => {
-        const defaults = { ...DEFAULT_SHADOW_STYLE };
-        populateForm(defaults);
-        writeStyle(defaults);
+        state = { ...DEFAULT_SHADOW_STYLE };
+        applyToForm();
+        writeStyle();
     });
 }
 

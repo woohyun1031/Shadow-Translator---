@@ -23,13 +23,8 @@
     "homepage": "https://github.com/woohyun1031/Shadow-Translator#readme",
     "devDependencies": {
         "copy-webpack-plugin": "^14.0.0",
-        "css-loader": "^7.1.4",
         "prettier": "^3.8.2",
-        "style-loader": "^4.0.0",
         "webpack": "^5.105.4",
         "webpack-cli": "^7.0.2"
-    },
-    "dependencies": {
-        "@melloware/coloris": "^0.25.0"
     }
 }
