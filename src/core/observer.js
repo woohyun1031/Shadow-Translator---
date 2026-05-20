@@ -4,6 +4,7 @@ import { renderShadowText, clearShadowTexts } from './renderer';
 
 const pendingBlocks = new Set();
 const processedBlocks = new WeakSet();
+
 let renderTimeout = null;
 
 const observer = new MutationObserver((mutations) => {
@@ -50,20 +51,31 @@ const observer = new MutationObserver((mutations) => {
 
     targetMap.forEach((record, target) => {
         if (record.removed.length > 0 && record.added.length > 0) {
-            const count = Math.max(record.removed.length, record.added.length);
-            for (let i = 0; i < count; i++) {
-                const textObj = record.removed[i] || record.removed[record.removed.length - 1];
-                const fontObj = record.added[i] || record.added[record.added.length - 1];
+            const rLen = record.removed.length;
+            const aLen = record.added.length;
 
-                if (fontObj && !fontObj.hasAttribute('data-echoed')) {
-                    fontObj.setAttribute('data-echo-original', textObj.textContent);
-                    fontObj.setAttribute('data-echoed', 'true');
+            for (let i = 0; i < aLen; i++) {
+                const fontObj = record.added[i];
+                if (!fontObj || fontObj.hasAttribute('data-echoed')) continue;
 
-                    const block = getBlockContainer(target);
-                    if (block && !processedBlocks.has(block)) {
-                        pendingBlocks.add(block);
-                        hasChanges = true;
-                    }
+                let originalText;
+                if (i === aLen - 1 && rLen > aLen) {
+                    originalText = record.removed
+                        .slice(i)
+                        .map((n) => n.textContent)
+                        .join(' ');
+                } else {
+                    const textObj = record.removed[i] || record.removed[rLen - 1];
+                    originalText = textObj.textContent;
+                }
+
+                fontObj.setAttribute('data-echo-original', originalText);
+                fontObj.setAttribute('data-echoed', 'true');
+
+                const block = getBlockContainer(target);
+                if (block && !processedBlocks.has(block)) {
+                    pendingBlocks.add(block);
+                    hasChanges = true;
                 }
             }
         }
