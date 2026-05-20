@@ -1,5 +1,7 @@
 import { isElementHidden, structuralTags } from '../utils/dom';
 
+const skipTags = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE', 'IFRAME', 'SVG', 'OBJECT']);
+
 export function extractOriginalTextDeep(element) {
     let result = '';
     if (!element) return result;
@@ -12,15 +14,6 @@ export function extractOriginalTextDeep(element) {
                 continue;
             }
 
-            const skipTags = new Set([
-                'SCRIPT',
-                'STYLE',
-                'NOSCRIPT',
-                'TEMPLATE',
-                'IFRAME',
-                'SVG',
-                'OBJECT',
-            ]);
             if (skipTags.has(child.tagName.toUpperCase())) {
                 continue;
             }

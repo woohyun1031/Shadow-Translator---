@@ -58,6 +58,7 @@ export function isElementHidden(element) {
     }
 
     if (element.classList) {
+        // hiddenClasses 화이트리스트가 정적 -> 이건 나중에 옵션으로 바꿀 수 있도록
         const hiddenClasses = [
             'sr-only',
             'visually-hidden',
