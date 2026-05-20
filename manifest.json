@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Shadow Translator - Bilingual display",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Preserve original text as a gray shadow below Google Translate results, ideal for learners keeping source and translation visible",
     "permissions": ["storage"],
     "action": {
