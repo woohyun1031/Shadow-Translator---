@@ -1,5 +1,5 @@
 import { getBlockContainer } from '../utils/dom';
-import { extractOriginalTextDeep } from './extractor';
+import { extractOriginalAndTranslated } from './extractor';
 import { renderShadowText, clearShadowTexts } from './renderer';
 
 const pendingBlocks = new Set();
@@ -88,8 +88,8 @@ const observer = new MutationObserver((mutations) => {
             pendingBlocks.forEach((block) => {
                 if (processedBlocks.has(block)) return;
 
-                const cleanText = extractOriginalTextDeep(block);
-                renderShadowText(block, cleanText);
+                const { original, translated } = extractOriginalAndTranslated(block);
+                renderShadowText(block, original, translated);
                 processedBlocks.add(block);
             });
             pendingBlocks.clear();
