@@ -20,7 +20,10 @@ export function setShadowStyle(partial) {
         .forEach((el) => applyStyleToNode(el, currentStyle));
 }
 
-export function renderShadowText(block, text) {
+// 비교용 정규화: 모든 공백 제거 (번역기가 기호 주변 공백을 임의로 가감하므로)
+const normalizeForCompare = (s) => s.replace(/\s+/g, '');
+
+export function renderShadowText(block, text, translated) {
     if (!text) return;
 
     // 직계 자식 중에서 이미 렌더링된 원본 텍스트 컨테이너가 있는지 확인
@@ -38,6 +41,13 @@ export function renderShadowText(block, text) {
     // 불필요하게 쪼개진 공백 정리
     const cleanText = text.replace(/\s+/g, ' ').trim();
     if (!cleanText) {
+        if (grayTextDiv) grayTextDiv.remove();
+        return;
+    }
+
+    // 번역기가 실제로 번역하지 않은 경우(숫자·기호·코드 등 원문 == 번역문)
+    // shadow는 같은 내용을 중복 표시할 뿐이므로 만들지 않는다
+    if (translated != null && normalizeForCompare(cleanText) === normalizeForCompare(translated)) {
         if (grayTextDiv) grayTextDiv.remove();
         return;
     }
